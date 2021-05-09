@@ -1,6 +1,7 @@
 import itertools
 from aiohttp import web
 import string
+import re
 
 
 def xor_encrypt(text, key):
@@ -17,10 +18,11 @@ def xor_decrypt(encrypted_text, key):
 
 
 def guess_key(encrypted_text, key_size):
+    pattern = r'[a-zA-Z0-9-_"\'\?\!\s]+'
     key_letters = string.ascii_lowercase
     text_list = [int(i) for i in encrypted_text.split(',')]
     keys = (''.join(i) for i in itertools.permutations(key_letters, key_size))
-    result = [[i, xor_decrypt(text_list, i)] for i in keys]
+    result = [[i, xor_decrypt(text_list, i)] for i in keys if xor_decrypt(text_list, i)]
     return result
 
 
